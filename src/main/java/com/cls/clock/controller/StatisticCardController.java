@@ -1,12 +1,10 @@
 package com.cls.clock.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.cls.clock.dao.StatisticCardDAO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @version 1.0
@@ -21,8 +19,8 @@ public class StatisticCardController {
     @Autowired
     private StatisticCardDAO statisticCardDAO;
 
-    @RequestMapping(value = "/{userId}",method = RequestMethod.GET)
-    public String getStatisticsByUserId(@PathVariable("userId") String userId){
-        return JSON.toJSONString(this.statisticCardDAO.getStatisticCardByUserId(userId));
+    @RequestMapping(method = RequestMethod.POST)
+    public String getStatisticsByUserId(@RequestBody JSONObject jsonParams){
+        return JSON.toJSONString(this.statisticCardDAO.getStatisticCardByUserId(jsonParams.getString("user_id")));
     }
 }

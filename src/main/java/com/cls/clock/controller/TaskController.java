@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cls.clock.dao.TaskDao;
 import com.cls.clock.model.ClockTask;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,17 +23,17 @@ public class TaskController {
 
     @Autowired
     private TaskDao taskDao;
+    private static final Log logger = LogFactory.getLog(TaskController.class);
 
-    @RequestMapping(value = "/getTaskList/{userId}",method = RequestMethod.GET)
-    public List<ClockTask> getTaskListById(@PathVariable("userId") String userId){
-        return this.taskDao.getTaskByUserID(userId);
+    @RequestMapping(value = "/getTaskList",method = RequestMethod.POST)
+    public List<ClockTask> getTaskListById(@RequestBody JSONObject jsonParams){
+        return this.taskDao.getTaskByUserID(jsonParams.getString("user_id"));
     }
 
 
     @RequestMapping(value = "/saveUserTask",method = RequestMethod.POST)
     public void saveUserTask(@RequestBody JSONObject jsonParams){
-        System.out.println(jsonParams.toString());
-        System.out.println("用户："+jsonParams.getString("user_id")+"立下了任务："+jsonParams.getString("task_name"));
+        logger.info("用户添加任务："+jsonParams.toString());
         ClockTask clockTask = new ClockTask();
         clockTask.setUser_id(jsonParams.getString("user_id"));
         clockTask.setTask_name(jsonParams.getString("task_name"));
@@ -42,7 +44,7 @@ public class TaskController {
 
     @RequestMapping(value = "/deleteUserTask",method = RequestMethod.POST)
     public void deleteUserTask(@RequestBody JSONObject jsonParams){
-        System.out.println("用户："+jsonParams.getString("user_id")+"申请删除了任务："+jsonParams.getString("task_id"));
+        logger.info("用户删除任务："+jsonParams.toString());
         taskDao.deleteUserTask(jsonParams.getString("user_id"),jsonParams.getString("task_id"));
     }
 }
