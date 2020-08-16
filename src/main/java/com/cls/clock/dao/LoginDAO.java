@@ -1,9 +1,7 @@
 package com.cls.clock.dao;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.ibatis.annotations.*;
 
 /**
  * 微信用户登录，若第一次则为其注册信息
@@ -19,6 +17,9 @@ public interface LoginDAO {
     int checkUserRegister(@Param("openId") String openId);
 
     @Insert("insert clock_users(open_id, wx_nick_name, gender, create_time, update_time) " +
-            "VALUES (#{openId},null,null,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP) ")
-    void saveUser(@Param("openId") String openId);
+            "VALUES (#{open_id},#{wx_nick_name},#{gender},CURRENT_TIMESTAMP,CURRENT_TIMESTAMP) ")
+    void saveUser(JSONObject params);
+
+    @Update("update clock_users set wx_nick_name = #{wx_nick_name},update_time = current_timestamp where open_id = #{open_id}")
+    void updateUser(JSONObject params);
 }
